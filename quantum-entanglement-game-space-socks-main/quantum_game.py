@@ -215,7 +215,8 @@ def exit_button_clicked():
 # Text to display
 hover_text = "Relative Distance between Bob and Alice's message!"
 
-def load(imagename):
+
+def load(imagename, img_width, img_height):
     # imagen= +str(imagename)
     # C:\pygame_vs_code\gate_imgs\if_info.png
     # C:\pygame_vs_code\gate_imgs\zgate.png
@@ -225,7 +226,7 @@ def load(imagename):
 
     imagename = os.path.join(base_dir, 'gate_imgs', f'{imagename}.png')
     image = pygame.image.load(imagename)
-    image = pygame.transform.scale(image, (30, 30))
+    image = pygame.transform.scale(image, (img_width, img_height))
     return image
 
 
@@ -286,6 +287,7 @@ pygame.display.set_icon(quatum_quest_logo)
 
 boxes=[]
 boxes1=[]
+boxes_drag=[]
 gate_positions=[]
 distList=[]
 
@@ -346,35 +348,66 @@ entangle_points=set()
 show=False      
 
 
-boxes.append(load("h gate"))
-boxes.append(load("xgate_info"))
-boxes.append(load("CX gate"))
-boxes.append(load("CCX gate"))
-boxes.append(load("swap"))
-boxes.append(load("ID gate"))
-boxes.append(load("tgate"))
-boxes.append(load("S gate"))
-boxes.append(load("zgate"))
-boxes.append(load("TDG gate"))
-boxes.append(load("sdggate"))
-boxes.append(load("pgate"))
-boxes.append(load("RZ gate"))
-boxes.append(load("measurement_info"))
-boxes.append(load("reset_info"))
-boxes.append(load("Barrier Info"))
-boxes.append(load("Control Info"))
-boxes.append(load("if_info"))
-boxes.append(load("SX gate info"))
-boxes.append(load("sxdggate"))
-boxes.append(load("Y gate info"))
-boxes.append(load("rxgate"))
-boxes.append(load("rygate"))
-boxes.append(load("RXX gate info"))
-boxes.append(load("rzzgate"))
-boxes.append(load("U gate info"))
-boxes.append(load("rccxgate"))
-boxes.append(load("RC3X gate info"))
-boxes.append(load("Phase disk info"))
+boxes.append(load("h gate", 30, 30))
+boxes.append(load("xgate_info", 30, 30))
+boxes.append(load("CX gate", 30, 30))
+boxes.append(load("CCX gate", 30, 30))
+boxes.append(load("swap", 30, 30))
+boxes.append(load("ID gate", 30, 30))
+boxes.append(load("tgate", 30, 30))
+boxes.append(load("S gate", 30, 30))
+boxes.append(load("zgate", 30, 30))
+boxes.append(load("TDG gate", 30, 30))
+boxes.append(load("sdggate", 30, 30))
+boxes.append(load("pgate", 30, 30))
+boxes.append(load("RZ gate", 30, 30))
+boxes.append(load("measurement_info", 30, 30))
+boxes.append(load("reset_info", 30, 30))
+boxes.append(load("Barrier Info", 30, 30))
+boxes.append(load("Control Info", 30, 30))
+boxes.append(load("if_info", 30, 30))
+boxes.append(load("SX gate info", 30, 30))
+boxes.append(load("sxdggate", 30, 30))
+boxes.append(load("Y gate info", 30, 30))
+boxes.append(load("rxgate", 30, 30))
+boxes.append(load("rygate", 30, 30))
+boxes.append(load("RXX gate info", 30, 30))
+boxes.append(load("rzzgate", 30, 30))
+boxes.append(load("U gate info", 30, 30))
+boxes.append(load("rccxgate", 30, 30))
+boxes.append(load("RC3X gate info", 30, 30))
+boxes.append(load("Phase disk info", 30, 30))
+
+
+boxes_drag.append(load("h gate", 30, 30))
+boxes_drag.append(load("xgate_info_drag", 30, 30))
+boxes_drag.append(load("CX gate_drag", 30, 65))
+boxes_drag.append(load("CCX gate_drag", 30, 70))
+boxes_drag.append(load("swap_drag", 40, 65))
+boxes_drag.append(load("ID gate", 30, 30))
+boxes_drag.append(load("tgate", 30, 30))
+boxes_drag.append(load("S gate", 30, 30))
+boxes_drag.append(load("zgate", 30, 30))
+boxes_drag.append(load("TDG gate", 30, 30))
+boxes_drag.append(load("sdggate", 30, 30))
+boxes_drag.append(load("pgate_drag", 37, 35))
+boxes_drag.append(load("RZ gate_drag", 37, 35))
+boxes_drag.append(load("measurement_info_drag", 30, 100))
+boxes_drag.append(load("reset_info", 30, 30))
+boxes_drag.append(load("Barrier Info", 30, 30))
+boxes_drag.append(load("Control Info", 30, 30))
+boxes_drag.append(load("if_info", 30, 30))
+boxes_drag.append(load("SX gate info", 30, 30))
+boxes_drag.append(load("sxdggate", 30, 30))
+boxes_drag.append(load("Y gate info", 30, 30))
+boxes_drag.append(load("rxgate_drag", 37, 30))
+boxes_drag.append(load("rygate_drag", 37, 30))
+boxes_drag.append(load("RXX gate info_drag", 37, 65))
+boxes_drag.append(load("rzzgate_drag", 39, 65))
+boxes_drag.append(load("U gate info", 37, 30))
+boxes_drag.append(load("rccxgate_drag", 37, 70))
+boxes_drag.append(load("RC3X gate info_drag", 37, 70))
+boxes_drag.append(load("Phase disk info_drag", 30, 100))
 
 for i in range(29):
     gate_positions.append((None, None))
@@ -749,6 +782,23 @@ while run:
         if event.type == pygame.MOUSEMOTION:
             if active_box != None:
                 boxes1[active_box][1].move_ip(event.rel)
+                # Use the snapped gate image
+                boxes1[active_box] = (boxes_drag[(active_box)%29], boxes1[active_box][1], boxes1[active_box][2])
+                # Calculate the distance between the gate and the circuit lines
+                gate_center = boxes1[active_box][1].center
+                closest_line = None
+                closest_distance = float('inf')
+                for i, line_rect in enumerate(lines_rects):
+                    line_center = line_rect.center
+                    distance = math.hypot(gate_center[0] - line_center[0], gate_center[1] - line_center[1])
+                    if distance < closest_distance:
+                        closest_distance = distance
+                        closest_line = line_rect
+
+                # Check if the gate is close enough to snap
+                if closest_distance < 15:
+                    # Snap the gate to the circuit line
+                    boxes1[active_box][1].center = closest_line.center
 
         if event.type == pygame.QUIT:
             run = False
