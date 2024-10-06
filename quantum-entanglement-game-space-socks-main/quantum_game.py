@@ -55,6 +55,45 @@ for i in range(9):
 line_colors = [(255, 0, 0), (255, 128, 0), (255, 255, 0), (128, 255, 0), (255, 0, 255),
                (255, 255, 0), (255, 0, 0), (0, 255, 0), (128, 0, 255), (255, 0, 255)]
 
+#gate names
+gate_names = [
+    "Hadamard Gate",
+    "X Gate",
+    "Controlled-NOT Gate",
+    "Toffoli Gate",
+    "Swap Gate",
+    "Identity Gate",
+    "T Gate",
+    "S Gate",
+    "Pauli-Z Gate",
+    "T Gate Dagger",
+    "S Gate Dagger",
+    "Phase Gate",
+    "RZ Gate",
+    "Measurement",
+    "Reset",
+    "Barrier",
+    "Control",
+    "If",
+    "Sqrt(X) Gate",
+    "Sqrt(X) Gate Dagger",
+    "Y Gate",
+    "RX Gate",
+    "RY Gate",
+    "RXX Gate",
+    "RZZ Gate",
+    "U Gate",
+    "Controlled-Controlled-X Gate",
+    "Controlled-Controlled-Controlled-X Gate",
+    "Phase Disk"
+    ]
+
+#Hovering
+hovered_gate = None
+for i in range(9):
+    activel.append(False)
+    colorl.append(color_passive)
+
 def is_point_in_circle(point_x, point_y, center_x, center_y, radius):
     # Calculate the distance between the point and the center of the circle
     distance = math.sqrt((point_x - center_x) ** 2 + (point_y - center_y) ** 2)
@@ -712,6 +751,15 @@ while run:
 
         if event.type == pygame.QUIT:
             run = False
+        
+        #Hovering
+        if event.type == pygame.MOUSEMOTION:
+                for num, (box, rect, weight) in enumerate(boxes1):
+                    if rect.collidepoint(event.pos):
+                        hovered_gate = num
+                        break
+                    else:
+                        hovered_gate = None
     
     if active1:
         color1=color_active
@@ -887,5 +935,18 @@ while run:
         dist_rect.w=max(150, score_surface.get_width()+10)
     
     gttime+=0.1
+    
+    # Hovering 
+    if hovered_gate is not None:
+    # Get the name of the hovered gate
+        if hovered_gate < len(gate_names):
+            gate_name = gate_names[hovered_gate]
+        # Get the position of the gate
+            gate_rect = boxes1[hovered_gate][1]
+        # Render the gate name
+            gate_name_surface = font3.render(gate_name, True, (255, 255, 255))
+        # Blit the gate name near the gate
+            screen.blit(gate_name_surface, (gate_rect.x + gate_rect.width + 10, gate_rect.y + gate_rect.height // 2 - gate_name_surface.get_height() // 2))
+
 
     pygame.display.flip()
