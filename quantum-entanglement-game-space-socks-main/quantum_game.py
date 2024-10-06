@@ -709,6 +709,7 @@ while run:
                     # print(num)
                     if rect.collidepoint(event.pos):
                         active_box = num
+                exit_button_clicked()
 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
