@@ -105,24 +105,24 @@ def is_point_in_circle(point_x, point_y, center_x, center_y, radius):
         return False
     
 # Function to handle the pause
-def exit_game():
-    paused = True
-    while paused:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:  # Unpause when 'e' is pressed
-                    # paused = False
-                    pygame.quit()
+# def exit_game():
+#     paused = True
+#     while paused:
+#         for event in pygame.event.get():
+#             if event.type == pygame.QUIT:
+#                 pygame.quit()
+#                 sys.exit()
+#             if event.type == pygame.KEYDOWN:
+#                 if event.key == pygame.K_e:  # Unpause when 'e' is pressed
+#                     # paused = False
+#                     pygame.quit()
 
-        # screen.fill((255, 255, 255))
-        screen.blit(back, (0, 0))
-        print_text2("Message Delivery Successful, Game Over!", 190, 275, (255, 255, 255))
-        print_text2("Press 'E' to Exit.", 190, 310, (255, 255, 255))
-        pygame.display.flip()
-        clock.tick(5)
+#         # screen.fill((255, 255, 255))
+#         screen.blit(back, (0, 0))
+#         print_text2("Message Delivery Successful, Game Over!", 190, 275, (255, 255, 255))
+#         print_text2("Press 'E' to Exit.", 190, 310, (255, 255, 255))
+#         pygame.display.flip()
+#         clock.tick(5)
 
 def print_text(text, x, y, color=(255, 255, 255)):
     text_surface = font3.render(text, True, color)
