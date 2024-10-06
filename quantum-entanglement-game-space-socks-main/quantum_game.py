@@ -94,6 +94,9 @@ for i in range(9):
     activel.append(False)
     colorl.append(color_passive)
 
+# Create a help button rectangle
+help_button_rect = pygame.Rect(952, 25, 40, 40)
+
 def is_point_in_circle(point_x, point_y, center_x, center_y, radius):
     # Calculate the distance between the point and the center of the circle
     distance = math.sqrt((point_x - center_x) ** 2 + (point_y - center_y) ** 2)
@@ -811,6 +814,12 @@ while run:
                         break
                     else:
                         hovered_gate = None
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if help_button_rect.collidepoint(event.pos):
+                    import webbrowser
+                    url = "https://youtu.be/6pbThpJ4dWE?si=efhLmdN36DCJUVqk"
+                    webbrowser.open(url)
     
     if active1:
         color1=color_active
@@ -992,12 +1001,14 @@ while run:
     # Get the name of the hovered gate
         if hovered_gate < len(gate_names):
             gate_name = gate_names[hovered_gate]
-        # Get the position of the gate
             gate_rect = boxes1[hovered_gate][1]
-        # Render the gate name
             gate_name_surface = font3.render(gate_name, True, (255, 255, 255))
-        # Blit the gate name near the gate
             screen.blit(gate_name_surface, (gate_rect.x + gate_rect.width + 10, gate_rect.y + gate_rect.height // 2 - gate_name_surface.get_height() // 2))
-
+    #Help Button
+    pygame.draw.rect(screen, (0, 128, 255), help_button_rect)
+    pygame.draw.rect(screen, (255, 255, 255), help_button_rect, 2)
+    help_text_surface = font3.render("?", True, (255, 255, 255))
+    help_text_rect = help_text_surface.get_rect(center=help_button_rect.center)
+    screen.blit(help_text_surface, help_text_rect)
 
     pygame.display.flip()
